@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     pocketid = {
-      source = "trozz/pocketid"
+      source = "reonokiy/pocketid"
     }
     random = {
       source  = "hashicorp/random"

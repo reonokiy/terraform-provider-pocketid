@@ -17,7 +17,7 @@ that allows users to authenticate with their passkeys to your services.
 terraform {
   required_providers {
     pocketid = {
-      source  = "trozz/pocketid"
+      source  = "reonokiy/pocketid"
       version = "~> 1.0"
     }
   }

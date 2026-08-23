@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  GO_VERSION: "1.25"
-
 permissions:
   contents: write
   id-token: write
@@ -51,16 +48,8 @@ jobs:
         if: steps.go_changes.outputs.changed == 'true'
         uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version-file: "go.mod"
           cache: true
-
-      - name: Import GPG key
-        if: steps.go_changes.outputs.changed == 'true'
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Generate snapshot version
         if: steps.go_changes.outputs.changed == 'true'

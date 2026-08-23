@@ -102,7 +102,7 @@ signs:
 # Release configuration
 release:
   github:
-    owner: Trozz
+    owner: reonokiy
     name: terraform-provider-pocketid
 
   extra_files:
@@ -115,16 +115,16 @@ release:
 
     ### Provider Documentation
 
-    Documentation is available on the [Terraform Registry](https://registry.terraform.io/providers/trozz/pocketid/{{ .Version }}/docs).
+    Documentation is available on the [Terraform Registry](https://registry.terraform.io/providers/reonokiy/pocketid/{{ .Version }}/docs).
 
   footer: |
     ## What's Next?
 
-    - Read the [documentation](https://registry.terraform.io/providers/trozz/pocketid/latest/docs)
-    - Report issues on [GitHub](https://github.com/Trozz/terraform-provider-pocketid/issues)
+    - Read the [documentation](https://registry.terraform.io/providers/reonokiy/pocketid/latest/docs)
+    - Report issues on [GitHub](https://github.com/reonokiy/terraform-provider-pocketid/issues)
     - Join the discussion on [Pocket-ID](https://github.com/pocket-id/pocket-id)
 
-    **Full Changelog**: https://github.com/Trozz/terraform-provider-pocketid/compare/{{ .PreviousTag }}...{{ .Tag }}
+    **Full Changelog**: https://github.com/reonokiy/terraform-provider-pocketid/compare/{{ .PreviousTag }}...{{ .Tag }}
 
   # Prerelease configuration
   prerelease: auto

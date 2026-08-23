@@ -4,10 +4,10 @@ contact_links:
     url: mailto:security@leer.dev
     about: Please report security vulnerabilities via email instead of GitHub issues
   - name: Terraform Provider Registry
-    url: https://registry.terraform.io/providers/trozz/pocketid/latest
+    url: https://registry.terraform.io/providers/reonokiy/pocketid/latest
     about: View the provider documentation on the Terraform Registry
   - name: Community Discussion
-    url: https://github.com/trozz/terraform-provider-pocketid/discussions
+    url: https://github.com/reonokiy/terraform-provider-pocketid/discussions
     about: Ask questions and discuss ideas with the community
   - name: Provider Development Guide
     url: https://developer.hashicorp.com/terraform/plugin/sdkv2

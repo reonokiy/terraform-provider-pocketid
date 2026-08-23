@@ -126,7 +126,7 @@ jobs:
         if: matrix.go-version == env.GO_VERSION
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: Trozz/terraform-provider-pocketid
+          slug: reonokiy/terraform-provider-pocketid
           files: ./coverage.out,./junit.xml
           flags: unittests
           name: codecov-umbrella
@@ -189,7 +189,7 @@ jobs:
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: Trozz/terraform-provider-pocketid
+          slug: reonokiy/terraform-provider-pocketid
           files: ./acceptance-coverage.out
           flags: acceptancetests
           name: codecov-acceptance
@@ -298,7 +298,7 @@ jobs:
           cp terraform-provider-pocketid artifact/
 
           # Also create a proper plugin directory structure
-          PROVIDER_DIR="artifact/terraform.d/plugins/registry.terraform.io/trozz/pocketid/0.1.0/linux_amd64"
+          PROVIDER_DIR="artifact/terraform.d/plugins/registry.terraform.io/reonokiy/pocketid/0.1.0/linux_amd64"
           mkdir -p "$PROVIDER_DIR"
           cp terraform-provider-pocketid "$PROVIDER_DIR/"
 
@@ -341,10 +341,10 @@ jobs:
           cp -r artifact/terraform.d/plugins/* ~/.terraform.d/plugins/
 
           # Make the provider executable
-          chmod +x ~/.terraform.d/plugins/registry.terraform.io/trozz/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
+          chmod +x ~/.terraform.d/plugins/registry.terraform.io/reonokiy/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
 
           # Verify installation
-          ls -la ~/.terraform.d/plugins/registry.terraform.io/trozz/pocketid/0.1.0/linux_amd64/
+          ls -la ~/.terraform.d/plugins/registry.terraform.io/reonokiy/pocketid/0.1.0/linux_amd64/
 
       - name: Setup and start Pocket-ID test environment
         env:
@@ -424,17 +424,17 @@ jobs:
           mkdir -p ~/.terraform.d/plugins
           cp -r artifact/terraform.d/plugins/* ~/.terraform.d/plugins/
 
-          # OpenTofu resolves source = "trozz/pocketid" via registry.opentofu.org,
+          # OpenTofu resolves source = "reonokiy/pocketid" via registry.opentofu.org,
           # so mirror the plugin under the OpenTofu registry path as well.
           mkdir -p ~/.terraform.d/plugins/registry.opentofu.org
-          cp -r ~/.terraform.d/plugins/registry.terraform.io/trozz ~/.terraform.d/plugins/registry.opentofu.org/
-          chmod +x ~/.terraform.d/plugins/registry.opentofu.org/trozz/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
+          cp -r ~/.terraform.d/plugins/registry.terraform.io/reonokiy ~/.terraform.d/plugins/registry.opentofu.org/
+          chmod +x ~/.terraform.d/plugins/registry.opentofu.org/reonokiy/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
 
           # Make the provider executable
-          chmod +x ~/.terraform.d/plugins/registry.terraform.io/trozz/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
+          chmod +x ~/.terraform.d/plugins/registry.terraform.io/reonokiy/pocketid/0.1.0/linux_amd64/terraform-provider-pocketid
 
           # Verify installation
-          ls -la ~/.terraform.d/plugins/registry.opentofu.org/trozz/pocketid/0.1.0/linux_amd64/
+          ls -la ~/.terraform.d/plugins/registry.opentofu.org/reonokiy/pocketid/0.1.0/linux_amd64/
 
       - name: Setup and start Pocket-ID test environment
         env:
