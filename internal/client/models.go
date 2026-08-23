@@ -78,6 +78,70 @@ type UpdateAllowedUserGroupsRequest struct {
 	UserGroupIDs []string `json:"userGroupIds"`
 }
 
+// API represents a protected resource registered in Pocket-ID. API resources
+// define the audience and scopes that OIDC clients may request.
+type API struct {
+	ID               string          `json:"id,omitempty"`
+	Name             string          `json:"name"`
+	Resource         string          `json:"resource"`
+	Permissions      []APIPermission `json:"permissions,omitempty"`
+	AllowCIMDClients bool            `json:"allowCimdClients,omitempty"`
+}
+
+// APIPermission represents one scope declared by an API resource.
+type APIPermission struct {
+	ID                    string  `json:"id,omitempty"`
+	Key                   string  `json:"key"`
+	Name                  string  `json:"name"`
+	Description           *string `json:"description,omitempty"`
+	AllowedForCIMDClients bool    `json:"allowedForCimdClients,omitempty"`
+}
+
+// APICreateRequest represents the request to create a protected resource.
+type APICreateRequest struct {
+	Name     string `json:"name"`
+	Resource string `json:"resource"`
+}
+
+// APIUpdateRequest represents the request to update a protected resource.
+// Resource is intentionally absent because Pocket-ID makes it immutable.
+type APIUpdateRequest struct {
+	Name string `json:"name"`
+}
+
+// APIPermissionInput represents a declarative permission in a full-replace
+// API permissions request.
+type APIPermissionInput struct {
+	Key         string  `json:"key"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+}
+
+// APIUpdatePermissionsRequest replaces every permission of an API resource.
+type APIUpdatePermissionsRequest struct {
+	Permissions []APIPermissionInput `json:"permissions"`
+}
+
+// APIClientGrant represents the access an OIDC client has to one API. The two
+// permission lists are managed independently for user-delegated and client
+// credentials flows.
+type APIClientGrant struct {
+	UserDelegatedAccess        bool     `json:"userDelegatedAccess"`
+	ClientAccess               bool     `json:"clientAccess"`
+	UserDelegatedPermissionIDs []string `json:"userDelegatedPermissionIds"`
+	ClientPermissionIDs        []string `json:"clientPermissionIds"`
+}
+
+// ClientAPIGrant is returned when listing all APIs that one OIDC client may
+// access. CIMD grants are deliberately exposed for read decisions only; this
+// provider manages explicit API/client grants, not CIMD policy.
+type ClientAPIGrant struct {
+	API API `json:"api"`
+	APIClientGrant
+	CIMDGrantedAccess        bool     `json:"cimdGrantedAccess"`
+	CIMDGrantedPermissionIDs []string `json:"cimdGrantedPermissionIds"`
+}
+
 // User represents a user in Pocket-ID
 type User struct {
 	ID            string        `json:"id,omitempty"`

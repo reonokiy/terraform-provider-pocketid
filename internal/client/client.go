@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
@@ -388,6 +389,125 @@ func (c *Client) GenerateClientSecret(clientID string) (string, error) {
 	}
 
 	return result.Secret, nil
+}
+
+// API resource methods
+
+// CreateAPI creates a protected API resource.
+func (c *Client) CreateAPI(createReq *APICreateRequest) (*API, error) {
+	body, err := c.doRequest("POST", "/api/apis", createReq)
+	if err != nil {
+		return nil, err
+	}
+
+	var result API
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return &result, nil
+}
+
+// GetAPI retrieves a protected API resource by ID.
+func (c *Client) GetAPI(apiID string) (*API, error) {
+	body, err := c.doRequest("GET", fmt.Sprintf("/api/apis/%s", url.PathEscape(apiID)), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var result API
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return &result, nil
+}
+
+// UpdateAPI updates the mutable fields of a protected API resource.
+func (c *Client) UpdateAPI(apiID string, updateReq *APIUpdateRequest) (*API, error) {
+	body, err := c.doRequest("PUT", fmt.Sprintf("/api/apis/%s", url.PathEscape(apiID)), updateReq)
+	if err != nil {
+		return nil, err
+	}
+
+	var result API
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return &result, nil
+}
+
+// UpdateAPIPermissions replaces the complete permission set of an API.
+func (c *Client) UpdateAPIPermissions(apiID string, permissions []APIPermissionInput) (*API, error) {
+	if permissions == nil {
+		permissions = []APIPermissionInput{}
+	}
+
+	body, err := c.doRequest("PUT", fmt.Sprintf("/api/apis/%s/permissions", url.PathEscape(apiID)), &APIUpdatePermissionsRequest{Permissions: permissions})
+	if err != nil {
+		return nil, err
+	}
+
+	var result API
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return &result, nil
+}
+
+// DeleteAPI deletes a protected API resource.
+func (c *Client) DeleteAPI(apiID string) error {
+	_, err := c.doRequest("DELETE", fmt.Sprintf("/api/apis/%s", url.PathEscape(apiID)), nil)
+	return err
+}
+
+// UpdateAPIClientAccess replaces a client's explicit access to one API.
+func (c *Client) UpdateAPIClientAccess(apiID, clientID string, grant *APIClientGrant) (*APIClientGrant, error) {
+	if grant.UserDelegatedPermissionIDs == nil {
+		grant.UserDelegatedPermissionIDs = []string{}
+	}
+	if grant.ClientPermissionIDs == nil {
+		grant.ClientPermissionIDs = []string{}
+	}
+
+	endpoint := fmt.Sprintf("/api/apis/%s/clients/%s", url.PathEscape(apiID), url.PathEscape(clientID))
+	body, err := c.doRequest("PUT", endpoint, grant)
+	if err != nil {
+		return nil, err
+	}
+
+	var result APIClientGrant
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return &result, nil
+}
+
+// DeleteAPIClientAccess removes all explicit grants from a client for one API.
+func (c *Client) DeleteAPIClientAccess(apiID, clientID string) error {
+	endpoint := fmt.Sprintf("/api/apis/%s/clients/%s", url.PathEscape(apiID), url.PathEscape(clientID))
+	_, err := c.doRequest("DELETE", endpoint, nil)
+	return err
+}
+
+// ListClientAPIs retrieves every API an OIDC client may reach. This endpoint
+// is intentionally used by API/client access resources because it is not
+// paginated and can therefore reliably find one managed grant.
+func (c *Client) ListClientAPIs(clientID string) ([]ClientAPIGrant, error) {
+	body, err := c.doRequest("GET", fmt.Sprintf("/api/api-access/%s/apis", url.PathEscape(clientID)), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []ClientAPIGrant
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, fmt.Errorf("error unmarshaling response: %w", err)
+	}
+
+	return result, nil
 }
 
 // User methods

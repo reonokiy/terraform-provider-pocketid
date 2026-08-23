@@ -67,6 +67,45 @@ func TestClientResource_Schema(t *testing.T) {
 	assert.True(t, fedAttr.IsOptional(), "federated_identities should be optional")
 }
 
+func TestAPIResource_Schema(t *testing.T) {
+	ctx := context.Background()
+	schemaResponse := &resource.SchemaResponse{}
+
+	resources.NewAPIResource().Schema(ctx, resource.SchemaRequest{}, schemaResponse)
+	if schemaResponse.Diagnostics.HasError() {
+		t.Fatalf("Schema returned diagnostics: %+v", schemaResponse.Diagnostics)
+	}
+
+	for _, attribute := range []string{"name", "resource", "permissions"} {
+		attr, ok := schemaResponse.Schema.Attributes[attribute]
+		assert.True(t, ok, "%s should exist", attribute)
+		assert.True(t, attr.IsRequired(), "%s should be required", attribute)
+	}
+
+	permissionIDs, ok := schemaResponse.Schema.Attributes["permission_ids"]
+	assert.True(t, ok, "permission_ids should exist")
+	assert.True(t, permissionIDs.IsComputed(), "permission_ids should be computed")
+}
+
+func TestAPIClientAccessResource_Schema(t *testing.T) {
+	ctx := context.Background()
+	schemaResponse := &resource.SchemaResponse{}
+
+	resources.NewAPIClientAccessResource().Schema(ctx, resource.SchemaRequest{}, schemaResponse)
+	if schemaResponse.Diagnostics.HasError() {
+		t.Fatalf("Schema returned diagnostics: %+v", schemaResponse.Diagnostics)
+	}
+
+	for _, attribute := range []string{
+		"api_id", "client_id", "user_delegated_access", "client_access",
+		"user_delegated_permission_ids", "client_permission_ids",
+	} {
+		attr, ok := schemaResponse.Schema.Attributes[attribute]
+		assert.True(t, ok, "%s should exist", attribute)
+		assert.True(t, attr.IsRequired(), "%s should be required", attribute)
+	}
+}
+
 func TestGroupResource_Schema(t *testing.T) {
 	ctx := context.Background()
 	schemaRequest := resource.SchemaRequest{}

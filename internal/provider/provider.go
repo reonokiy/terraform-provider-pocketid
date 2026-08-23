@@ -209,6 +209,8 @@ func (p *pocketIDProvider) DataSources(_ context.Context) []func() datasource.Da
 func (p *pocketIDProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.NewClientResource,
+		resources.NewAPIResource,
+		resources.NewAPIClientAccessResource,
 		resources.NewUserResource,
 		resources.NewGroupResource,
 		resources.NewOneTimeAccessTokenResource,

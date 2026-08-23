@@ -17,6 +17,7 @@ passwords. This makes it more secure and user-friendly than traditional authenti
 ## Features
 
 - 🔐 **OIDC Client Management**: Create and manage OAuth2/OIDC client applications
+- 🛡️ **Protected API Management**: Declare OAuth 2.0 resource indicators, permissions, and client-credentials grants
 - 👥 **User Management**: Manage user accounts (passkey registration via UI)
 - 👨‍👩‍👦‍👦 **Group Management**: Organize users and control access with groups
 - 🔑 **Secure Authentication**: API token-based provider authentication
@@ -122,6 +123,41 @@ resource "pocketid_user" "john_doe" {
 }
 ```
 
+### 4. Declare an API for machine-to-machine access
+
+```hcl
+resource "pocketid_api" "telemetry_ingest" {
+  name     = "External telemetry ingest"
+  resource = "https://ingest.nokiy.net"
+
+  permissions = [
+    {
+      key  = "telemetry.write"
+      name = "Write telemetry"
+    }
+  ]
+}
+
+resource "pocketid_client" "telemetry_agent" {
+  name          = "External telemetry agent"
+  callback_urls = ["http://localhost"]
+  is_public     = false
+  pkce_enabled  = true
+}
+
+resource "pocketid_api_client_access" "telemetry_agent" {
+  api_id    = pocketid_api.telemetry_ingest.id
+  client_id = pocketid_client.telemetry_agent.id
+
+  user_delegated_access        = false
+  user_delegated_permission_ids = []
+  client_access                = true
+  client_permission_ids = [
+    pocketid_api.telemetry_ingest.permission_ids["telemetry.write"]
+  ]
+}
+```
+
 ## Resources
 
 ### Available Resources
@@ -147,6 +183,8 @@ Full documentation is available on the [Terraform Registry](https://registry.ter
 - [Resource: pocketid_client](https://registry.terraform.io/providers/trozz/pocketid/latest/docs/resources/client)
 - [Resource: pocketid_user](https://registry.terraform.io/providers/trozz/pocketid/latest/docs/resources/user)
 - [Resource: pocketid_group](https://registry.terraform.io/providers/trozz/pocketid/latest/docs/resources/group)
+- [Resource: pocketid_api](https://registry.terraform.io/providers/trozz/pocketid/latest/docs/resources/api)
+- [Resource: pocketid_api_client_access](https://registry.terraform.io/providers/trozz/pocketid/latest/docs/resources/api_client_access)
 
 ## Examples
 
